@@ -1,0 +1,13 @@
+venv
+templates
+chatApp/settings.py
+.idea
+secrets.json
+db.sqlite3
+chat/templates
+__pycache__/
+*.py[cod]
+.log
+chat/__pycache__/
+chat/migrations/__pycache__/
+chatApp/__pycache__/
