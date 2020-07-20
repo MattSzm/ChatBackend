@@ -1,6 +1,5 @@
 venv
 templates
-chatApp/settings.py
 .idea
 secrets.json
 db.sqlite3
