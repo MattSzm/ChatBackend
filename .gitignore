@@ -10,3 +10,4 @@ __pycache__/
 chat/__pycache__/
 chat/migrations/__pycache__/
 chatApp/__pycache__/
+chat/static
