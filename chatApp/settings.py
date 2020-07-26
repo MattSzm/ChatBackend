@@ -21,7 +21,7 @@ SECRET_KEY = getSecret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+AUTH_USER_MODEL = 'user.User'
 ALLOWED_HOSTS = []
 
 
@@ -34,8 +34,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'chat.apps.ChatConfig',
+
     'channels',
+
+    'chat.apps.ChatConfig',
+    'user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +134,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

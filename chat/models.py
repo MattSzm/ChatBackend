@@ -8,7 +8,9 @@ UserModel = get_user_model()
 
 class Chat(models.Model):
     participants = models.ManyToManyField(UserModel,
-                                          related_name='chats')
+                                          through='ChatParticipantConnector',
+                                          related_name='chats',
+                                          symmetrical=True)
     name = models.CharField(unique=False, max_length=50,
                                         blank=True, null=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False,
@@ -41,10 +43,11 @@ class Message(models.Model):
     author = models.ForeignKey(UserModel,
                                related_name='author_messages',
                                on_delete=models.CASCADE)
-    content = models.TextField()
-    time_stamp = models.DateTimeField(auto_now_add=True)
     chat = models.ForeignKey(Chat, related_name='messages',
                              on_delete=models.CASCADE)
+    content = models.TextField()
+    time_stamp = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return self.content
@@ -56,3 +59,12 @@ class Message(models.Model):
 
     def last_15_messages(self):
         return Message.objects.order_by('-time_stamp').all()[:15]
+
+
+class ChatParticipantConnector(models.Model):
+    chat = models.ForeignKey(Chat,
+                             related_name='connector_chat',
+                             on_delete=models.CASCADE)
+    participant = models.ForeignKey(UserModel,
+                                    related_name='connector_par',
+                                    on_delete=models.CASCADE)
