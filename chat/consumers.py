@@ -3,20 +3,47 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import chat.models
 from django.contrib.auth import get_user_model
-from django.shortcuts import redirect
 
 UserModel = get_user_model()
 
 class ChatConsumer(WebsocketConsumer):
+    def messages_to_json(self, messages):
+        output = []
+        for message in messages:
+            output.append(self.message_to_json(message))
+        return output
+
+    def message_to_json(self, message):
+        return {
+            'author_id': message.author.id,
+            'content': message.content,
+            'time_stamp': str(message.time_stamp),
+        }
+
     def fetch_messages(self, data):
-        #todo: need extra method to load old messages
-        messages_10, last_load = self.chat.load_next_10_messages()
-        self.last_load = last_load
+        # we are given 0 if its first request
+        # (we can also pass current time, but '0' works fine).
+        # in other cases we have time_stamp,
+        # so we can send older messages.
+        if data['last_message_time_stamp'] == '0':
+            messages_15, last_load = self.chat.load_next_15_messages()
+        else:
+            messages_15, last_load = self.chat.load_next_15_messages(
+                data['last_message_time_stamp'])
 
         content = {
-            'messages': self.messages_to_json(messages_10)
+            'messages': self.messages_to_json(messages_15),
+            'command': 'fetch_messages',
+            'last_message_time_stamp': str(last_load)
         }
+        if len(messages_15) == 0:
+            content['error'] = 'NO MESSAGES'
+        elif len(messages_15) < 15:
+            content['error'] = 'LAST PACKAGE'
         self.send_messages(content)
+
+    def send_messages(self, content):
+        self.send(text_data=json.dumps(content))
 
     def new_message(self, data):
         author_id = data['from']
@@ -33,19 +60,6 @@ class ChatConsumer(WebsocketConsumer):
             'command': 'new_message'
         }
         self.send_group_chat_message(content)
-
-    def messages_to_json(self, messages):
-        output = []
-        for message in messages:
-            output.append(self.message_to_json(message))
-        return output
-
-    def message_to_json(self, message):
-        return {
-            'author': message.author.username,
-            'content': message.content,
-            'time_stamp': str(message.time_stamp)
-        }
 
 
     #pick a action
@@ -96,9 +110,6 @@ class ChatConsumer(WebsocketConsumer):
                 'message': message
             }
         )
-
-    def send_messages(self, messages):
-        self.send(text_data=json.dumps(messages))
 
     def new_chat_message(self, event):
         message = event['message']
