@@ -16,7 +16,9 @@ class Chat(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False,
                                 unique=True, db_index=True)
     created = models.DateTimeField(auto_now_add=True)
+    last_message_date = models.DateTimeField(default=timezone.now())
     is_group_chat = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.name
@@ -38,7 +40,6 @@ class Chat(models.Model):
             return False
 
 
-
 class Message(models.Model):
     author = models.ForeignKey(UserModel,
                                related_name='author_messages',
@@ -48,6 +49,10 @@ class Message(models.Model):
     content = models.TextField()
     time_stamp = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        super(Message,self).save(*args, **kwargs)
+        self.chat.last_message_date = timezone.now()
+        self.chat.save()
 
     def __str__(self):
         return self.content

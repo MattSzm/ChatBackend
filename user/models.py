@@ -37,6 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                               blank=False)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False,
                             unique=True, db_index=True)
+    #client side should ask for nickname, just after registration
     user_name = models.CharField(max_length=50, unique=False,
                                  blank=True, null=True)
     description = models.CharField(max_length=250, blank=True,
@@ -71,6 +72,12 @@ class Contact(models.Model):
     second_user = models.ForeignKey(User,
                                     related_name='connector_two',
                                     on_delete=models.CASCADE)
+    areFriends = models.BooleanField(default=False)
+    #when one person send invite to another they are not friends yet
+    #we need to switch 'areFriends' to true when second person
+    #accept the invitation
+    #we display friends by filtring 'areFriends==True'
+    #When the invitation is rejected, we delete the object(Contact)
 
     def __str__(self):
         if self.first_user.user_name and self.second_user.user_name:

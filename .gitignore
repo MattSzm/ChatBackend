@@ -13,3 +13,4 @@ chatApp/__pycache__/
 chat/static
 user/__pycache__/
 user/migrations/__pycache__/
+/media

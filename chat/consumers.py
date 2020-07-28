@@ -25,7 +25,8 @@ class ChatConsumer(WebsocketConsumer):
         # (we can also pass current time, but '0' works fine).
         # in other cases we have time_stamp,
         # so we can send older messages.
-        if data['last_message_time_stamp'] == '0':
+        if (not data['last_message_time_stamp'] or
+                data['last_message_time_stamp']) == '0':
             messages_15, last_load = self.chat.load_next_15_messages()
         else:
             messages_15, last_load = self.chat.load_next_15_messages(
@@ -40,6 +41,7 @@ class ChatConsumer(WebsocketConsumer):
             content['error'] = 'NO MESSAGES'
         elif len(messages_15) < 15:
             content['error'] = 'LAST PACKAGE'
+        print(content)
         self.send_messages(content)
 
     def send_messages(self, content):

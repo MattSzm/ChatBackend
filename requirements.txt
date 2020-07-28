@@ -11,11 +11,14 @@ constantly==15.1.0
 cryptography==2.9.2
 daphne==2.5.0
 Django==3.0.8
+djangorestframework==3.11.0
 hiredis==1.1.0
 hyperlink==19.0.0
 idna==2.10
 incremental==17.5.0
 msgpack==1.0.0
+Pillow==7.2.0
+psycopg2==2.8.5
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20

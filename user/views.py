@@ -1,3 +1,8 @@
-from django.shortcuts import render
+import user.serializers
+from rest_framework.generics import RetrieveAPIView
+from user.models import User
 
-# Create your views here.
+class UserDetail(RetrieveAPIView):
+    queryset = User.object.all()
+    serializer_class = user.serializers.BaseUserSerializer
+    lookup_field = 'uuid'
