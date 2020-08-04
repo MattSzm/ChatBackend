@@ -67,10 +67,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Contact(models.Model):
     first_user = models.ForeignKey(User,
-                                   related_name='connector_one',
+                                   related_name='connector_one_friend',
                                    on_delete=models.CASCADE)
     second_user = models.ForeignKey(User,
-                                    related_name='connector_two',
+                                    related_name='connector_two_friend',
                                     on_delete=models.CASCADE)
     areFriends = models.BooleanField(default=False)
     #when one person send invite to another they are not friends yet

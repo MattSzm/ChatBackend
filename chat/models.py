@@ -16,7 +16,7 @@ class Chat(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False,
                                 unique=True, db_index=True)
     created = models.DateTimeField(auto_now_add=True)
-    last_message_date = models.DateTimeField(default=timezone.now())
+    last_message_date = models.DateTimeField(default=timezone.now)
     is_group_chat = models.BooleanField(default=False)
 
 
@@ -38,6 +38,7 @@ class Chat(models.Model):
             return True
         except:
             return False
+
 
 
 class Message(models.Model):

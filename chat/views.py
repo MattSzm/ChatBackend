@@ -7,6 +7,7 @@ from rest_framework import status
 from chat.filters import filter_all_user_chats
 import chat.serializers
 
+
 #testing_purpose
 def index(request):
     return render(request, 'index.html', {})
@@ -26,3 +27,4 @@ class UserChatsList(APIView):
         serializer = chat.serializers.ChatSerializer(chats, many=True,
                                                 context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+    #todo: add to the response last message.
