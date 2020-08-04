@@ -49,6 +49,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def new_message(self, data):
         author_id = data['from']
+        #todo: think about switch to uuid (safer?)
         author = UserModel.object.get(pk=author_id)
 
         new_message = chat.models.Message.objects.create(
@@ -73,6 +74,10 @@ class ChatConsumer(WebsocketConsumer):
     def connect(self):
         self.room_uuid = self.scope['url_route']['kwargs']['uuid_room']
         self.try_to_find_chat_by_uuid(self.room_uuid)
+        #todo: we need to implement custom permission.
+        # check if current user has access to this chat!
+        # if not disconnect
+        #VERY IMPORTANT
         if self.chat:
             self.room_group_name = f'chat_{self.chat.uuid}'
             async_to_sync(self.channel_layer.group_add)(

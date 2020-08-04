@@ -7,6 +7,15 @@ from rest_framework import status
 import user.filters
 from django.http import Http404
 from chat.actions import createPrivateChat
+import chat.serializers
+
+
+class CurrentUser(APIView):
+    def get(self, request, format=None):
+        if request.user:
+            serializer = user.serializers.BaseUserSerializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserDetail(RetrieveAPIView):
@@ -70,11 +79,12 @@ class Friends(APIView):
                 first_user = self.current_user,
                 second_user = invited_user
             )
+            #first_user invites second_user
             new_contact.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_208_ALREADY_REPORTED)
 
-    #Todo: deletefriend
+    #Todo: delete friend [maybe in future]
 
 
 class Invitations(APIView):
@@ -108,8 +118,13 @@ class Invitations(APIView):
                     contact.areFriends = True
                     contact.save()
                     #need to be change if deleting is implemented!
-                    if createPrivateChat(contact_object=contact):
-                        return Response(status=status.HTTP_201_CREATED)
+                    new_chat =  createPrivateChat(contact_object=contact)
+                    if new_chat:
+                        new_serializer = chat.serializers.\
+                            ChatSerializerWithParticipants(new_chat,
+                                        context={'request': request})
+                        return Response(new_serializer.data,
+                                        status=status.HTTP_201_CREATED)
                     else:
                         return Response(status=status.HTTP_423_LOCKED)
                 else:

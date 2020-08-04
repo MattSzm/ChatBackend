@@ -12,6 +12,18 @@ def createPrivateChat(contact_object):
         ChatParticipantConnector.objects.create(
                                         chat=new_chat,
                                         participant=second_participant)
+        return new_chat
+    except:
+        return False
+
+
+def createGroupChat(new_chat, current_user):
+    try:
+        new_chat.is_group_chat = True
+        ChatParticipantConnector.objects.create(
+                                        chat=new_chat,
+                                        participant=current_user)
+        new_chat.save()
         return True
     except:
         return False

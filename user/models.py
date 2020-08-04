@@ -80,17 +80,24 @@ class Contact(models.Model):
     #When the invitation is rejected, we delete the object(Contact)
 
     def __str__(self):
-        #todo: what if they are not frients yet?!
-        if self.first_user.user_name and self.second_user.user_name:
-            return f'{self.first_user.user_name} and ' \
-                   f'{self.second_user.user_name} are friends.'
-        elif self.first_user.user_name:
-            return f'{self.first_user.user_name} and ' \
-                   f'{self.second_user.email} are friends.'
-        elif self.second_user.user_name:
-            return f'{self.first_user.email} and ' \
-                   f'{self.second_user.user_name} are friends.'
+        if self.areFriends:
+            pattern = '{} and {} are friends.'
+            return self.str_help(pattern)
         else:
-            return f'{self.first_user.email} and ' \
-                   f'{self.second_user.email} are friends.'
+            pattern = '{} invited {}.'
+            return self.str_help(pattern)
+
+    def str_help(self, pattern):
+        if self.first_user.user_name and self.second_user.user_name:
+            return pattern.format(self.first_user.user_name,
+                                  self.second_user.user_name)
+        elif self.first_user.user_name:
+            return pattern.format(self.first_user.user_name,
+                                  self.second_user.email)
+        elif self.second_user.user_name:
+            return pattern.format(self.first_user.email,
+                                  self.second_user.user_name)
+        else:
+            return pattern.format(self.first_user.email,
+                                  self.second_user.email)
 
