@@ -7,8 +7,9 @@ class ChatSerializer(serializers.HyperlinkedModelSerializer):
                                                        view_name='user:user-detail',
                                                        read_only=True,
                                                        lookup_field='uuid')
+    lastmessage = serializers.ReadOnlyField(source='load_last_message')
 
     class Meta:
         model = Chat
-        fields = [ 'id', 'uuid', 'name','is_group_chat','participants',
-                  'last_message_date']
+        fields = ['id', 'uuid', 'name', 'is_group_chat', 'participants',
+                  'last_message_date', 'lastmessage']

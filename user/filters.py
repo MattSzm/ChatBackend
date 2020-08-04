@@ -1,12 +1,12 @@
 from user.models import Contact, User
 from django.db.models import Q
 
-def are_friends(user_serialized, current_user):
-    if (Contact.objects.filter(Q(first_user_id=user_serialized.id) &
-                               Q(second_user_id=current_user.id) &
+def are_friends(first_user, second_user):
+    if (Contact.objects.filter(Q(first_user_id=first_user.id) &
+                               Q(second_user_id=second_user.id) &
                                Q(areFriends=True)) or
-            Contact.objects.filter(Q(first_user_id=current_user.id) &
-                                   Q(second_user_id=user_serialized.id) &
+            Contact.objects.filter(Q(first_user_id=second_user.id) &
+                                   Q(second_user_id=first_user.id) &
                                     Q(areFriends=True))):
         return True
     return False
@@ -43,3 +43,4 @@ def filter_friends(current_user):
 def filter_invitations(current_user):
     return Contact.objects.filter(Q(second_user_id=current_user.id) &
                                           Q(areFriends=False))
+

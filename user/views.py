@@ -6,6 +6,7 @@ from user.models import User, Contact
 from rest_framework import status
 import user.filters
 from django.http import Http404
+from chat.actions import createPrivateChat
 
 
 class UserDetail(RetrieveAPIView):
@@ -33,7 +34,7 @@ class UserListSearch(APIView):
 
 
 class Friends(APIView):
-    def get_object_new_friend(self, user_uuid):
+    def get_object(self, user_uuid):
         try:
             return User.object.get(uuid=user_uuid)
         except User.DoesNotExist:
@@ -63,7 +64,7 @@ class Friends(APIView):
     #send invitation
     def post(self, request, format=None):
         user_uuid = request.data['user_uuid']
-        invited_user = self.get_object_new_friend(user_uuid)
+        invited_user = self.get_object(user_uuid)
         if self.are_not_friends(self.current_user, invited_user):
             new_contact = Contact.objects.create(
                 first_user = self.current_user,
@@ -72,6 +73,8 @@ class Friends(APIView):
             new_contact.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_208_ALREADY_REPORTED)
+
+    #Todo: deletefriend
 
 
 class Invitations(APIView):
@@ -100,9 +103,17 @@ class Invitations(APIView):
         if serializer.is_valid():
             contact = self.get_single_invitation(serializer.data["contact_id"])
             if serializer.data["decision"] == True:
-                contact.areFriends = True
-                contact.save()
-                return Response(status=status.HTTP_202_ACCEPTED)
+                if not user.filters.are_friends(first_user=contact.first_user,
+                                            second_user=contact.second_user):
+                    contact.areFriends = True
+                    contact.save()
+                    #need to be change if deleting is implemented!
+                    if createPrivateChat(contact_object=contact):
+                        return Response(status=status.HTTP_201_CREATED)
+                    else:
+                        return Response(status=status.HTTP_423_LOCKED)
+                else:
+                    return Response(status=status.HTTP_208_ALREADY_REPORTED)
             else:
                 contact.delete()
                 return Response(status=status.HTTP_200_OK)

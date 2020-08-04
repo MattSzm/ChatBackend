@@ -5,7 +5,7 @@ from user.models import User, Contact
 class BaseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'uuid', 'user_name', 'photo', 'is_active']
+        fields = ['email', 'id', 'uuid', 'user_name', 'photo', 'is_active']
 
 
 class InvitationSerializer(serializers.ModelSerializer):

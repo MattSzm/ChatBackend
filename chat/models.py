@@ -21,7 +21,9 @@ class Chat(models.Model):
 
 
     def __str__(self):
-        return self.name
+        if self.name:
+            return self.name
+        return str(self.uuid)
 
     def load_next_15_messages(self, last_saw_date=timezone.now()):
         sortedMessages = self.messages.order_by('-time_stamp')\
@@ -31,6 +33,15 @@ class Chat(models.Model):
                 time_stamp
         else:
             return [], last_saw_date
+
+    @property
+    def load_last_message(self):
+        try:
+            lastMessage = self.messages.order_by('-time_stamp') \
+                             .filter(time_stamp__lt=timezone.now())[0]
+        except IndexError:
+            lastMessage = None
+        return str(lastMessage)
 
     def check_if_user_is_a_participant(self, user_id):
         try:

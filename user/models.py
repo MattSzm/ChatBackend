@@ -80,6 +80,7 @@ class Contact(models.Model):
     #When the invitation is rejected, we delete the object(Contact)
 
     def __str__(self):
+        #todo: what if they are not frients yet?!
         if self.first_user.user_name and self.second_user.user_name:
             return f'{self.first_user.user_name} and ' \
                    f'{self.second_user.user_name} are friends.'
