@@ -56,7 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_table = 'user'
 
     USERNAME_FIELD = 'email'
-    object = UserManager()
+    objects = UserManager()
 
     def get_short_name(self):
         return self.user_name.strip()

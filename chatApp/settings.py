@@ -37,6 +37,8 @@ INSTALLED_APPS = [
 
     'channels',
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
 
     'chat.apps.ChatConfig',
     'user.apps.UserConfig',
@@ -141,6 +143,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 1

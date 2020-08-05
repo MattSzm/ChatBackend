@@ -19,7 +19,7 @@ class CurrentUser(APIView):
 
 
 class UserDetail(RetrieveAPIView):
-    queryset = User.object.all()
+    queryset = User.objects.all()
     serializer_class = user.serializers.BaseUserSerializer
     lookup_field = 'uuid'
 
@@ -45,7 +45,7 @@ class UserListSearch(APIView):
 class Friends(APIView):
     def get_object(self, user_uuid):
         try:
-            return User.object.get(uuid=user_uuid)
+            return User.objects.get(uuid=user_uuid)
         except User.DoesNotExist:
             raise Http404
 
