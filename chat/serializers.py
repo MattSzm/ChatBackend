@@ -2,13 +2,13 @@ from rest_framework import serializers
 from chat.models import Chat
 
 
-class ChatSerializer(serializers.HyperlinkedModelSerializer):
+class ChatSerializer(serializers.ModelSerializer):
     lastmessage = serializers.ReadOnlyField(source='load_last_message')
 
     class Meta:
         model = Chat
         fields = ['id', 'uuid', 'name', 'is_group_chat',
-                  'last_message_date', 'lastmessage']
+                  'last_activity_date', 'lastmessage']
 
 
 class ChatSerializerWithParticipants(serializers.HyperlinkedModelSerializer):
@@ -21,7 +21,7 @@ class ChatSerializerWithParticipants(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Chat
         fields = ['id', 'name', 'is_group_chat', 'participants',
-                  'last_message_date', 'lastmessage']
+                  'last_activity_date', 'lastmessage']
 
 
 class GroupChatCreate(serializers.ModelSerializer):

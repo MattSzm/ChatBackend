@@ -16,7 +16,7 @@ class Chat(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False,
                                 unique=True, db_index=True)
     created = models.DateTimeField(auto_now_add=True)
-    last_message_date = models.DateTimeField(default=timezone.now)
+    last_activity_date = models.DateTimeField(default=timezone.now)
     is_group_chat = models.BooleanField(default=False)
 
 
@@ -50,6 +50,10 @@ class Chat(models.Model):
         except:
             return False
 
+    def update_last_activity_date(self):
+        self.last_activity_date = timezone.now()
+        self.save()
+
 
 class Message(models.Model):
     author = models.ForeignKey(UserModel,
@@ -62,8 +66,7 @@ class Message(models.Model):
 
     def save(self, *args, **kwargs):
         super(Message, self).save(*args, **kwargs)
-        self.chat.last_message_date = timezone.now()
-        self.chat.save()
+        self.chat.update_last_activity_date()
 
     def __str__(self):
         return self.content

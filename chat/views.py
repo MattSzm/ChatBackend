@@ -46,8 +46,7 @@ class UserChatsList(APIView, LimitOffsetPagination):
 
         if len(chats) > 0:
             result_page = self.paginate_queryset(chats, request, view=self)
-            serializer = chat.serializers.ChatSerializer(result_page, many=True,
-                                            context={'request': request})
+            serializer = chat.serializers.ChatSerializer(result_page, many=True)
             #HTTP_200 by default
             return self.get_paginated_response(serializer.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -106,6 +105,7 @@ class ChatDetail(APIView):
             if user_can_be_added_to_chat(self.chat, user_to_add, self.current_user):
                 if are_friends(user_to_add, self.current_user):
                     add_user_to_chat(self.chat, user_to_add)
+                    self.chat.update_last_activity_date()
                     return Response(status=status.HTTP_200_OK)
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST)

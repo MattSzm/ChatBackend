@@ -3,11 +3,16 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from dj_rest_auth.views import LoginView, LogoutView, PasswordChangeView
+from django.urls import re_path
+from user.views import CustomConfirmEmailView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('api/chat/', include('chat.urls', namespace='chat')),
     path('api/user/', include('user.urls', namespace='user')),
+
 
     path('api/rest-auth/login/', LoginView.as_view(),
          name='login'),
@@ -15,7 +20,11 @@ urlpatterns = [
          name='logout'),
     path('api/rest-auth/password/change/', PasswordChangeView.as_view(),
          name='password-change'),
-]
+
+    re_path('api/rest-auth/registration/account-confirm-email/(?P<key>.+)/',
+            CustomConfirmEmailView.as_view(), name='account_confirm_email'),
+    path('api/rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    ]
 
 
 

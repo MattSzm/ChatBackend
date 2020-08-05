@@ -33,4 +33,3 @@ def user_can_be_added_to_chat(chat, user_to_add, current_user):
     return False
 
 
-

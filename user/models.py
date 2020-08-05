@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 import uuid
+from django.urls import reverse
 
 
 class UserManager(BaseUserManager):
@@ -38,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False,
                             unique=True, db_index=True)
     #client side should ask for nickname, just after registration
-    user_name = models.CharField(max_length=50, unique=False,
+    username = models.CharField(max_length=50, unique=False,
                                  blank=True, null=True)
     description = models.CharField(max_length=250, blank=True,
                                    null=True)
@@ -59,10 +60,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     def get_short_name(self):
-        return self.user_name.strip()
+        return self.username.strip()
 
     def get_full_name(self):
-        return f'{self.uuid}_{self.user_name}'
+        return f'{self.uuid}_{self.username}'
+
+    def get_absolute_url(self):
+        return reverse('user:fetch-current-user')
 
 
 class Contact(models.Model):
@@ -88,15 +92,15 @@ class Contact(models.Model):
             return self.str_help(pattern)
 
     def str_help(self, pattern):
-        if self.first_user.user_name and self.second_user.user_name:
-            return pattern.format(self.first_user.user_name,
-                                  self.second_user.user_name)
-        elif self.first_user.user_name:
-            return pattern.format(self.first_user.user_name,
+        if self.first_user.username and self.second_user.username:
+            return pattern.format(self.first_user.username,
+                                  self.second_user.username)
+        elif self.first_user.username:
+            return pattern.format(self.first_user.username,
                                   self.second_user.email)
-        elif self.second_user.user_name:
+        elif self.second_user.username:
             return pattern.format(self.first_user.email,
-                                  self.second_user.user_name)
+                                  self.second_user.username)
         else:
             return pattern.format(self.first_user.email,
                                   self.second_user.email)

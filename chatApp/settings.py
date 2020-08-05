@@ -34,14 +34,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    'chat.apps.ChatConfig',
+    'user.apps.UserConfig',
 
     'channels',
     'rest_framework',
     'rest_framework.authtoken',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'dj_rest_auth',
+    'dj_rest_auth.registration',
 
-    'chat.apps.ChatConfig',
-    'user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
@@ -156,3 +162,12 @@ REST_FRAMEWORK = {
 # 1 for testing purposes
 
 #todo: delete sessionauth [in future]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SITE_ID = 1
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False

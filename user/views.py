@@ -10,7 +10,9 @@ from chat.actions import create_private_chat
 import chat.serializers
 from rest_framework.pagination import LimitOffsetPagination
 import user.actions
-
+from allauth.account.views import ConfirmEmailView
+from django.shortcuts import redirect
+from allauth.account.adapter import DefaultAccountAdapter
 
 class CurrentUser(APIView):
     def get(self, request, format=None):
@@ -137,3 +139,17 @@ class Invitations(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+
+#todo: if we add social auth - move whole code to new app
+class CustomConfirmEmailView(ConfirmEmailView):
+    def get(self, request, *args, **kwargs):
+        try:
+            self.object = self.get_object()
+        except Http404:
+            self.object = None
+
+        self.object = confirmation = self.get_object()
+        confirmation.confirm(self.request)
+        # user = confirmation.email_address.user
+        request.user = None
+        return redirect('login')
