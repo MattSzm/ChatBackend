@@ -8,6 +8,8 @@ import user.filters
 from django.http import Http404
 from chat.actions import createPrivateChat
 import chat.serializers
+from rest_framework.pagination import LimitOffsetPagination
+import user.actions
 
 
 class CurrentUser(APIView):
@@ -24,25 +26,24 @@ class UserDetail(RetrieveAPIView):
     lookup_field = 'uuid'
 
 
-class UserListSearch(APIView):
+class UserListSearch(APIView, LimitOffsetPagination):
     def get_object(self, phrase, current_user):
         return user.filters.users_with_phrase(phrase, current_user)
 
     def get(self, request, phrase, format=None):
         current_user = request.user
         searched_users = self.get_object(phrase, current_user)
-        serializer = user.serializers.BaseUserSerializer(searched_users,
-                                                         many=True)
-        for single_user in serializer.data:
-            single_user['is_friend_of_current_user'] = user.filters.\
-                are_friends_with_serializer(single_user, current_user)
-
-        if len(serializer.data) > 0:
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        if len(searched_users) > 0:
+            result_page = self.paginate_queryset(searched_users, request,
+                                                 view=self)
+            serializer = user.serializers.BaseUserSerializer(result_page,
+                                many=True, context={'request': request})
+            user.actions.add_are_friends_property(serializer, current_user)
+            return self.get_paginated_response(serializer.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class Friends(APIView):
+class Friends(APIView, LimitOffsetPagination):
     def get_object(self, user_uuid):
         try:
             return User.objects.get(uuid=user_uuid)
@@ -65,9 +66,10 @@ class Friends(APIView):
     def get(self, request, format=None):
         friends = self.get_friends()
         if len(friends) > 0:
-            serializer = user.serializers.BaseUserSerializer(friends,
-                                                        many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            result_page = self.paginate_queryset(friends, request, view=self)
+            serializer = user.serializers.BaseUserSerializer(result_page,
+                                    many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     #send invitation

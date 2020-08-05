@@ -140,6 +140,7 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -153,3 +154,5 @@ REST_FRAMEWORK = {
 }
 #todo: change page_size to 5-10[in future]
 # 1 for testing purposes
+
+#todo: delete sessionauth [in future]

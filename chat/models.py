@@ -51,7 +51,6 @@ class Chat(models.Model):
             return False
 
 
-
 class Message(models.Model):
     author = models.ForeignKey(UserModel,
                                related_name='author_messages',
@@ -62,7 +61,7 @@ class Message(models.Model):
     time_stamp = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        super(Message,self).save(*args, **kwargs)
+        super(Message, self).save(*args, **kwargs)
         self.chat.last_message_date = timezone.now()
         self.chat.save()
 
@@ -70,10 +69,7 @@ class Message(models.Model):
         return self.content
 
     #useless right now
-    def last_15_messages_till_now(self):
-        return Message.objects.filter(timeStamp__lte=self.time_stamp)\
-            .order_by('-time_stamp')[:15]
-
+    @staticmethod
     def last_15_messages(self):
         return Message.objects.order_by('-time_stamp').all()[:15]
 
