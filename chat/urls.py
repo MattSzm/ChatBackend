@@ -8,7 +8,11 @@ urlpatterns = [
     path('mychats/', chatViews.UserChatsList.as_view(),
          name='user-chats-list'),
     path('mychats/<str:type>/', chatViews.UserChatsList.as_view(),
-         name='personal-chats'),
+         name='user-chat-list-select'),
+    path('mychat/<uuid:chat_uuid>/', chatViews.ChatDetail.as_view(),
+         name='chat=detail'),
+
+    #Sandbox!
     path('', chatViews.index, name='index'),
     path('<uuid:uuid_room>/', chatViews.room, name='room'),
 ]

@@ -3,6 +3,8 @@ from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import chat.models
 from django.contrib.auth import get_user_model
+from chat.permission import is_participant_permission
+
 
 UserModel = get_user_model()
 
@@ -74,8 +76,8 @@ class ChatConsumer(WebsocketConsumer):
 
         if self.chat:
             self.room_group_name = f'chat_{self.chat.uuid}'
-            if (self.user.is_authenticated and self.user in
-                    self.chat.participants.all()):
+            if (self.user.is_authenticated and is_participant_permission(
+                    self.user, self.chat)):
                 async_to_sync(self.channel_layer.group_add)(
                     self.room_group_name,
                     self.channel_name

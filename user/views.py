@@ -6,7 +6,7 @@ from user.models import User, Contact
 from rest_framework import status
 import user.filters
 from django.http import Http404
-from chat.actions import createPrivateChat
+from chat.actions import create_private_chat
 import chat.serializers
 from rest_framework.pagination import LimitOffsetPagination
 import user.actions
@@ -120,7 +120,7 @@ class Invitations(APIView):
                     contact.areFriends = True
                     contact.save()
                     #need to be change if deleting is implemented!
-                    new_chat =  createPrivateChat(contact_object=contact)
+                    new_chat =  create_private_chat(contact_object=contact)
                     if new_chat:
                         new_serializer = chat.serializers.\
                             ChatSerializerWithParticipants(new_chat,
