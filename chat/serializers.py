@@ -20,7 +20,7 @@ class ChatSerializerWithParticipants(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Chat
-        fields = ['id', 'name', 'is_group_chat', 'participants',
+        fields = ['id', 'uuid', 'name', 'is_group_chat', 'participants',
                   'last_activity_date', 'lastmessage']
 
 

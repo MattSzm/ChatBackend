@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from dj_rest_auth.views import LoginView, LogoutView, PasswordChangeView
 from django.urls import re_path
-from user.views import CustomConfirmEmailView
+from user.views import CustomConfirmEmailView, redirectIT
 
 
 urlpatterns = [
@@ -13,6 +13,8 @@ urlpatterns = [
     path('api/chat/', include('chat.urls', namespace='chat')),
     path('api/user/', include('user.urls', namespace='user')),
 
+    path('accounts/profile/', redirectIT),
+    path('accounts/', include('allauth.urls')),
 
     path('api/rest-auth/login/', LoginView.as_view(),
          name='login'),
@@ -25,7 +27,6 @@ urlpatterns = [
             CustomConfirmEmailView.as_view(), name='account_confirm_email'),
     path('api/rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     ]
-
 
 
 if settings.DEBUG:

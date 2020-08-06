@@ -12,7 +12,9 @@ from rest_framework.pagination import LimitOffsetPagination
 import user.actions
 from allauth.account.views import ConfirmEmailView
 from django.shortcuts import redirect
-from allauth.account.adapter import DefaultAccountAdapter
+from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from django.urls import reverse
+
 
 class CurrentUser(APIView):
     def get(self, request, format=None):
@@ -140,7 +142,7 @@ class Invitations(APIView):
 
 
 
-#todo: if we add social auth - move whole code to new app
+#todo: if we add social auth - move whole code to new app!
 class CustomConfirmEmailView(ConfirmEmailView):
     def get(self, request, *args, **kwargs):
         try:
@@ -153,3 +155,13 @@ class CustomConfirmEmailView(ConfirmEmailView):
         # user = confirmation.email_address.user
         request.user = None
         return redirect('login')
+
+def redirectIT(request, *args, **kwargs):
+    return redirect('user:fetch-current-user')
+
+# class CustomSocialAdapter(DefaultSocialAccountAdapter):
+#     def get_connect_redirect_url(self, request, socialaccount):
+#         assert request.user.is_authenticated
+#         print('we are in!')
+#         url = reverse('user:fetch-current-user')
+#         return url
