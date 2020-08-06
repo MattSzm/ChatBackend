@@ -8,12 +8,16 @@ from rest_framework import status
 
 class CustomConfirmEmailView(ConfirmEmailView):
     def get(self, request, *args, **kwargs):
+        """
+        Response for registration confirmation
+        """
         try:
             self.object = self.get_object()
         except Http404:
             self.object = None
+            return JsonResponse({"confirmed": False})
 
-        self.object = confirmation = self.get_object()
+        confirmation = self.object
         confirmation.confirm(self.request)
         request.user = None
         return JsonResponse({"confirmed": True})

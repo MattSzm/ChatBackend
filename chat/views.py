@@ -15,26 +15,15 @@ from django.http import JsonResponse
 from user.filters import are_friends
 
 
-#testing_purpose
-def index(request):
-    return render(request, 'index.html', {})
-
-def room(request, uuid_room):
-    obj = get_object_or_404(Chat, uuid=uuid_room)
-
-    return render(request, 'room.html',
-        {'uuid_room': uuid_room,
-         'room_name': obj.name})
-    # return  render(None, 'room.html', {})
-
-
-
 class UserChatsList(APIView, LimitOffsetPagination):
     def dispatch(self, request, *args, **kwargs):
         self.current_user = request.user
         return super(UserChatsList, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, type=None, format=None):
+        """
+        Show all user chats or 'groups'/'private'
+        """
         if not type:
             chats = chat.filters.filter_all_user_chats(user=self.current_user)
         else:
@@ -54,6 +43,9 @@ class UserChatsList(APIView, LimitOffsetPagination):
 
     #create new group chat
     def post(self, request, type=None, format=None):
+        """
+        User can create group chat
+        """
         if type != 'groups':
             return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = chat.serializers.GroupChatCreate(data=request.data)
@@ -93,6 +85,10 @@ class ChatDetail(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, chat_uuid, format=None):
+        """
+        Get access to chat by uuid. No matter group or not.
+        """
+
         serializer = chat.serializers.ChatSerializerWithParticipants(self.chat,
                                         many=False, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -100,6 +96,10 @@ class ChatDetail(APIView):
     #current user can add to chat only friends!!!
     #adding only for group chats
     def post(self, request, chat_uuid, format=None):
+        """
+        User can add friends(and only friends) to chat!
+        Adding works only for group chats.
+        """
         user_uuid = request.data['user_uuid']
         user_to_add  = self.get_user(user_uuid)
         if self.chat.is_group_chat:
@@ -111,3 +111,17 @@ class ChatDetail(APIView):
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_208_ALREADY_REPORTED)
+
+
+
+#testing_purpose-Sandbox
+# def index(request):
+#     return render(request, 'index.html', {})
+#
+# def room(request, uuid_room):
+#     obj = get_object_or_404(Chat, uuid=uuid_room)
+#
+#     return render(request, 'room.html',
+#         {'uuid_room': uuid_room,
+#          'room_name': obj.name})
+

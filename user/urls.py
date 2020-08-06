@@ -16,5 +16,4 @@ urlpatterns = [
     path('<uuid:uuid>/', userViews.UserDetail.as_view(),
          name='user-detail'),
 
-
 ]

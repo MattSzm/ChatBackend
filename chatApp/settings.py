@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'dj_rest_auth',
     'dj_rest_auth.registration',
+    'drf_yasg',
 
 ]
 
@@ -148,22 +149,18 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES':[
-        'rest_framework.authentication.SessionAuthentication',
+       #YOU WILL NEED SESSIONAUTH IF YOU WANT TO USE GOOGLE AUTH ENDPOINTS
+        # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 1
+    'PAGE_SIZE': 8
 }
-#todo: change page_size to 5-10[in future]
-# 1 for testing purposes
-
-#todo: delete sessionauth [in future]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

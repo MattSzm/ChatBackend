@@ -3,7 +3,7 @@ from user.models import User
 from rest_framework.authtoken.models import Token
 
 
-#need improvements!!!
+#needs improvements!!!
 class customAdapter(DefaultSocialAccountAdapter):
     def try_to_get_user(self, email):
         try:
