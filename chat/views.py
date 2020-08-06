@@ -28,6 +28,7 @@ def room(request, uuid_room):
     # return  render(None, 'room.html', {})
 
 
+
 class UserChatsList(APIView, LimitOffsetPagination):
     def dispatch(self, request, *args, **kwargs):
         self.current_user = request.user

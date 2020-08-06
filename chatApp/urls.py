@@ -2,31 +2,21 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from dj_rest_auth.views import LoginView, LogoutView, PasswordChangeView
-from django.urls import re_path
-from user.views import CustomConfirmEmailView, redirectIT
+from customAuthentication.views import redirect_after_social_auth
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    path('accounts/profile/', redirect_after_social_auth,
+         name='redirect-to-current-user'),
+
     path('api/chat/', include('chat.urls', namespace='chat')),
     path('api/user/', include('user.urls', namespace='user')),
+    path('api/rest-auth/', include('customAuthentication.urls')),
+]
 
-    path('accounts/profile/', redirectIT),
-    path('accounts/', include('allauth.urls')),
 
-    path('api/rest-auth/login/', LoginView.as_view(),
-         name='login'),
-    path('api/rest-auth/logout/', LogoutView.as_view(),
-         name='logout'),
-    path('api/rest-auth/password/change/', PasswordChangeView.as_view(),
-         name='password-change'),
-
-    re_path('api/rest-auth/registration/account-confirm-email/(?P<key>.+)/',
-            CustomConfirmEmailView.as_view(), name='account_confirm_email'),
-    path('api/rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    ]
 
 
 if settings.DEBUG:

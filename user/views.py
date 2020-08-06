@@ -10,11 +10,6 @@ from chat.actions import create_private_chat
 import chat.serializers
 from rest_framework.pagination import LimitOffsetPagination
 import user.actions
-from allauth.account.views import ConfirmEmailView
-from django.shortcuts import redirect
-from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from django.urls import reverse
-
 
 class CurrentUser(APIView):
     def get(self, request, format=None):
@@ -139,29 +134,3 @@ class Invitations(APIView):
                 contact.delete()
                 return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-
-#todo: if we add social auth - move whole code to new app!
-class CustomConfirmEmailView(ConfirmEmailView):
-    def get(self, request, *args, **kwargs):
-        try:
-            self.object = self.get_object()
-        except Http404:
-            self.object = None
-
-        self.object = confirmation = self.get_object()
-        confirmation.confirm(self.request)
-        # user = confirmation.email_address.user
-        request.user = None
-        return redirect('login')
-
-def redirectIT(request, *args, **kwargs):
-    return redirect('user:fetch-current-user')
-
-# class CustomSocialAdapter(DefaultSocialAccountAdapter):
-#     def get_connect_redirect_url(self, request, socialaccount):
-#         assert request.user.is_authenticated
-#         print('we are in!')
-#         url = reverse('user:fetch-current-user')
-#         return url

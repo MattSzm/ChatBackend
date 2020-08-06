@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'chat.apps.ChatConfig',
     'user.apps.UserConfig',
+    'customAuthentication.apps.CustomauthenticationConfig',
 
     'channels',
     'rest_framework',
@@ -171,4 +172,6 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
+
+SOCIALACCOUNT_ADAPTER = 'customAuthentication.adapter.customAdapter'
 
