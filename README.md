@@ -44,6 +44,7 @@ The app works both with private and group chats.
  ## Authentication and Permission
  Whole project works with Token authentication.
  You have to attach the Token key with every request.
+ 
  Token authorization is due to security reasons.
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-35-36.png)
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-34-55.png)
