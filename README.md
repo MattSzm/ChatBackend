@@ -7,13 +7,13 @@ The app works both with private and group chats.
  * [Django Rest Framework][restframeworklink]
  * [Django Channels][channelslink]
  
-##Databases I used:
+## Databases I used:
  * [PostgreSQL][postgreslink]
- * [Redis] [redislink]
+ * [Redis][redislink]
  
  All additional extensions and packages can be found in 'requirements.txt'.
  
- ##The backend contain two main endpoints:
+ ## The backend contain two main endpoints:
  * Standard, comprehensive REST API
  
  * Channels to handle WebSockets
@@ -22,7 +22,7 @@ The app works both with private and group chats.
  All endpoints are available on `apischema/`.
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-27-27.png)
  
-#####Example query(searching users):
+##### Example query(searching users):
 ![](media-readMe/Screenshot%20from%202020-08-06%2021-39-00.png)
 
  
@@ -41,14 +41,14 @@ The app works both with private and group chats.
  This screenshot was made on my sandbox(client-side) only for presentation purpose.
  I do not attach these files in the repository. 
  
- ##Authentication and Permission
+ ## Authentication and Permission
  Whole project works with Token authentication.
  You have to attach the Token key with every request.
  Token authorization is due to security reasons.
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-35-36.png)
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-34-55.png)
  
- #####Issues
+ ##### Issues
  * Google authentication doesn't work completely.
  I mentioned this issue in the `settings.py` file.
  To make it work, positive response(user successfully logged in) from the server should contain
