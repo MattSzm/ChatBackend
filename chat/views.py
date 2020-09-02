@@ -34,7 +34,7 @@ class UserChatsList(APIView, LimitOffsetPagination):
             elif type == 'groups':
                 chats = chat.filters.filter_specific(self.current_user, True)
 
-        if len(chats) > 0:
+        if chats:
             result_page = self.paginate_queryset(chats, request, view=self)
             serializer = chat.serializers.ChatSerializer(result_page, many=True)
             #HTTP_200 by default

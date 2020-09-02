@@ -39,7 +39,7 @@ class UserListSearch(APIView, LimitOffsetPagination):
         """
         current_user = request.user
         searched_users = self.get_object(phrase, current_user)
-        if len(searched_users) > 0:
+        if searched_users:
             result_page = self.paginate_queryset(searched_users, request,
                                                  view=self)
             serializer = user.serializers.BaseUserSerializer(result_page,
@@ -74,7 +74,7 @@ class Friends(APIView, LimitOffsetPagination):
         Shows list of current user's friends.
         """
         friends = self.get_friends()
-        if len(friends) > 0:
+        if friends:
             result_page = self.paginate_queryset(friends, request, view=self)
             serializer = user.serializers.BaseUserSerializer(result_page,
                                     many=True, context={'request': request})
@@ -119,7 +119,7 @@ class Invitations(APIView):
         """
         current_user = request.user
         invitations = self.get_invitations(current_user)
-        if len(invitations) > 0:
+        if invitations:
             serializer = user.serializers.InvitationSerializer(
                 invitations, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
