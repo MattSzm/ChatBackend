@@ -1,8 +1,10 @@
 import json
+
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
-import chat.models
 from django.contrib.auth import get_user_model
+
+import chat.models
 from chat.permission import is_participant_permission
 
 

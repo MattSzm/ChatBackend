@@ -1,18 +1,17 @@
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from chat.models import Chat
-from user.models import User
+from django.http import Http404
+from django.http import JsonResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.pagination import LimitOffsetPagination
+
+from chat.actions import create_group_chat, user_can_be_added_to_chat, add_user_to_chat
+from chat.permission import is_participant_permission
+from user.filters import are_friends
 import chat.filters
 import chat.serializers
-from rest_framework.pagination import LimitOffsetPagination
-from chat.actions import create_group_chat, user_can_be_added_to_chat, add_user_to_chat
-from django.http import Http404
-from chat.permission import is_participant_permission
-from django.http import JsonResponse
-from user.filters import are_friends
+from chat.models import Chat
+from user.models import User
 
 
 class UserChatsList(APIView, LimitOffsetPagination):

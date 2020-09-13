@@ -1,10 +1,11 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth import get_user_model
-import uuid
 from django.utils import timezone
 
-UserModel = get_user_model()
 
+UserModel = get_user_model()
 
 class Chat(models.Model):
     participants = models.ManyToManyField(UserModel,

@@ -1,6 +1,7 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from user.models import User
 from rest_framework.authtoken.models import Token
+
+from user.models import User
 
 
 #needs improvements!!!

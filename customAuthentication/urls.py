@@ -1,6 +1,7 @@
 from django.urls import path, include
 from django.urls import re_path
 from dj_rest_auth.views import LoginView, LogoutView, PasswordChangeView
+
 from customAuthentication.views import CustomConfirmEmailView
 
 

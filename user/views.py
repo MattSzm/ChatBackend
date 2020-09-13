@@ -1,15 +1,17 @@
-import user.serializers
+from django.http import Http404
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from user.models import User, Contact
 from rest_framework import status
-import user.filters
-from django.http import Http404
-from chat.actions import create_private_chat
-import chat.serializers
 from rest_framework.pagination import LimitOffsetPagination
+
+import user.filters
 import user.actions
+import user.serializers
+from user.models import User, Contact
+import chat.serializers
+from chat.actions import create_private_chat
+
 
 class CurrentUser(APIView):
     def get(self, request, format=None):

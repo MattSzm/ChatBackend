@@ -1,5 +1,7 @@
-from user.models import Contact, User
 from django.db.models import Q
+
+from user.models import Contact, User
+
 
 def are_friends(first_user, second_user):
     if (Contact.objects.filter(Q(first_user_id=first_user.id) &

@@ -1,5 +1,6 @@
 from chat.models import Chat, ChatParticipantConnector
 
+
 def add_user_to_chat(chat, user):
     ChatParticipantConnector.objects.create(
                         chat=chat,
