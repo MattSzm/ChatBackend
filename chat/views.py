@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
 
-from chat.actions import create_group_chat, user_can_be_added_to_chat, add_user_to_chat
+from chat.actions import create_group_chat, add_user_to_chat
 from chat.permission import is_participant_permission
 from user.filters import are_friends
 import chat.filters
@@ -23,6 +23,7 @@ class UserChatsList(APIView, LimitOffsetPagination):
         """
         Show all user chats or 'groups'/'private'
         """
+        chats = None
         if not type:
             chats = chat.filters.filter_all_user_chats(user=self.current_user)
         else:
@@ -92,8 +93,6 @@ class ChatDetail(APIView):
                                         many=False, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    #current user can add to chat only friends!!!
-    #adding only for group chats
     def post(self, request, chat_uuid, format=None):
         """
         User can add friends(and only friends) to chat!
@@ -102,14 +101,14 @@ class ChatDetail(APIView):
         user_uuid = request.data['user_uuid']
         user_to_add  = self.get_user(user_uuid)
         if self.chat.is_group_chat:
-            if user_can_be_added_to_chat(self.chat, user_to_add, self.current_user):
+            if chat.filters.filter_user_can_be_added_to_chat(self.chat, user_to_add):
                 if are_friends(user_to_add, self.current_user):
                     add_user_to_chat(self.chat, user_to_add)
                     self.chat.update_last_activity_date()
                     return Response(status=status.HTTP_200_OK)
                 else:
                     return Response(status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_208_ALREADY_REPORTED)
+        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 

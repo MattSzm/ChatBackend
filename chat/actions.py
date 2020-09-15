@@ -6,6 +6,7 @@ def add_user_to_chat(chat, user):
                         chat=chat,
                         participant=user)
 
+
 def create_private_chat(contact_object):
     first_participant = contact_object.first_user
     second_participant = contact_object.second_user
@@ -18,6 +19,7 @@ def create_private_chat(contact_object):
     except:
         return False
 
+
 def create_group_chat(new_chat, current_user):
     try:
         new_chat.is_group_chat = True
@@ -26,11 +28,3 @@ def create_group_chat(new_chat, current_user):
         return True
     except:
         return False
-
-def user_can_be_added_to_chat(chat, user_to_add, current_user):
-    participants = chat.participants.all()
-    if user_to_add not in participants:
-        return True
-    return False
-
-

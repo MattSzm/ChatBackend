@@ -99,7 +99,7 @@ class Friends(APIView, LimitOffsetPagination):
             #first_user invites second_user
             new_contact.save()
             return Response(status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_208_ALREADY_REPORTED)
+        return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
     #Todo: delete friend [maybe in future]
 
@@ -131,7 +131,8 @@ class Invitations(APIView):
     def post(self, request, format=None):
         """
         Decide what to do with invitation. Accept or not.
-        Creating a private chat at the same time.
+        Decision is a boolean value.
+        Creating a private chat at the same time if accepted.
         """
         serializer = user.serializers.InvitationResponse(data=request.data)
         if serializer.is_valid():
