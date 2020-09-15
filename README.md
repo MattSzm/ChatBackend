@@ -47,7 +47,7 @@ The app works both with private and group chats.
  
  Token authorization is due to security reasons.
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-35-36.png)
- ## &nbsp;
+ &nbsp;
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-34-55.png)
  
  ##### Issues
