@@ -47,15 +47,11 @@ The app works both with private and group chats.
  
  Token authorization is due to security reasons.
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-35-36.png)
+ &nbsp;
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-34-55.png)
  
  ##### Issues
- * Google authentication doesn't work completely.
- I mentioned this issue in the `settings.py` file.
- To make it work, positive response(user successfully logged in) from the server should contain
- generated Token(for our app).
- However authentication with google account works fine when we add Session Authentication
- to our authentication classes.
+ ###### * Google authentication doesn't work completely. I mentioned this issue in the `settings.py` file. To make it work, positive response(user successfully logged in) from the server should contain generated Token(for our   app). However authentication with google account works fine when we add Session Authentication to our authentication classes.
   
  [restframeworklink]:https://www.django-rest-framework.org/
  [djangolink]:https://www.djangoproject.com/
