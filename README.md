@@ -49,7 +49,7 @@ The app works both with private and group chats.
  - 90 seconds:
     - `/api/chat/mychats/`
     - `/api/chat/mychats/<str:type>/`   
-    - `/api/user/search/<str:phrase>//`    
+    - `/api/user/search/<str:phrase>/`    
  - 60 seconds: 
     - `/api/user/<uuid:uuid>/`
  
