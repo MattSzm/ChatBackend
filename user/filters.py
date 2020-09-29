@@ -34,9 +34,8 @@ def are_friends_for_adding(first_user, second_user):
     return False
 
 
-def users_with_phrase(phrase, current_user):
-    return User.objects.filter(Q(username__icontains = phrase) &
-                              ~Q(id = current_user.id))
+def users_with_phrase(phrase):
+    return User.objects.filter(username__icontains = phrase)
 
 
 def filter_friends(current_user):

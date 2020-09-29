@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 import user.views as userViews
 
@@ -14,7 +15,7 @@ urlpatterns = [
          name='invitations'),
     path('currentuser/', userViews.CurrentUser.as_view(),
          name='fetch-current-user'),
-    path('<uuid:uuid>/', userViews.UserDetail.as_view(),
+    path('<uuid:uuid>/', cache_page(60)(userViews.UserDetail.as_view()),
          name='user-detail'),
 
 ]

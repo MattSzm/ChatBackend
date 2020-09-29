@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'dj_rest_auth.registration',
     'drf_yasg',
-
+    'memcache_status',
 ]
 
 MIDDLEWARE = [
@@ -156,3 +156,9 @@ ACCOUNT_USERNAME_REQUIRED = False
 
 SOCIALACCOUNT_ADAPTER = 'customAuthentication.adapter.customAdapter'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+        }
+}

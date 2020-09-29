@@ -1,4 +1,5 @@
 from django.http import Http404
+from django.core.cache import cache
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -31,8 +32,8 @@ class UserDetail(RetrieveAPIView):
 
 
 class UserListSearch(APIView, LimitOffsetPagination):
-    def get_object(self, phrase, current_user):
-        return user.filters.users_with_phrase(phrase, current_user)
+    def get_objects(self, phrase):
+        return user.filters.users_with_phrase(phrase)
 
     def get(self, request, phrase, format=None):
         """
@@ -40,9 +41,16 @@ class UserListSearch(APIView, LimitOffsetPagination):
         Every searched user has a 'is_friend_of_current_user' property.
         """
         current_user = request.user
-        searched_users = self.get_object(phrase, current_user)
-        if searched_users:
-            result_page = self.paginate_queryset(searched_users, request,
+        key = f'search_{phrase}'
+        results = cache.get(key)
+        if not results:
+            results = self.get_objects(phrase)
+            if results:
+                cache.set(key, results, 90)
+            else:
+                cache.set(key, '204_NO_CONTENT', 90)
+        if results and results != '204_NO_CONTENT':
+            result_page = self.paginate_queryset(results, request,
                                                  view=self)
             serializer = user.serializers.BaseUserSerializer(result_page,
                                 many=True, context={'request': request})
@@ -65,7 +73,7 @@ class Friends(APIView, LimitOffsetPagination):
     def get_friends(self, current_user):
         return user.filters.filter_friends(current_user)
 
-    #show all friends
+    # show all friends
     def get(self, request, format=None):
         """
         Shows list of current user's friends.
@@ -78,7 +86,7 @@ class Friends(APIView, LimitOffsetPagination):
             return self.get_paginated_response(serializer.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    #send invitation
+    # send invitation
     def post(self, request, format=None):
         """
             Sends a invitation. Request has to pass 'user_uuid'
@@ -109,7 +117,7 @@ class Invitations(APIView):
     def get_invitations(self, current_user):
         return user.filters.filter_invitations(current_user)
 
-    #show my invitations
+    # show my invitations
     def get(self, request, format=None):
         """
         Show all received invitations which hasn't been managed.
@@ -122,7 +130,7 @@ class Invitations(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    #answer the invitation
+    # answer the invitation
     def post(self, request, format=None):
         """
         Decide what to do with invitation. Accept or not.
@@ -138,7 +146,7 @@ class Invitations(APIView):
                                             second_user=contact.second_user):
                     contact.areFriends = True
                     contact.save()
-                    #need to be change if deleting is implemented!
+                    # need to be change if deleting is implemented!
                     new_chat =  create_private_chat(contact_object=contact)
                     if new_chat:
                         new_serializer = chat.serializers.\

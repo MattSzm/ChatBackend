@@ -10,6 +10,7 @@ The app works both with private and group chats.
 ## Databases I used:
  * [PostgreSQL][postgreslink]
  * [Redis][redislink]
+ * [Memcached][memcachedlienk] (Caching system)
  
  All additional extensions and packages can be found in 'requirements.txt'.
  
@@ -41,11 +42,22 @@ The app works both with private and group chats.
  This screenshot was made on my sandbox(client-side) only for presentation purpose.
  I do not attach these files in the repository. 
  
+ ## Caching
+ Thanks to distributed memory-caching system -> Memcached, 
+ we are able to save request execution time.
+ Cached endpoints:
+ - 90 seconds:
+    - `/api/chat/mychats/`
+    - `/api/chat/mychats/<str:type>/`   
+    - `/api/user/search/<str:phrase>//`    
+ - 60 seconds: 
+    - `/api/user/<uuid:uuid>/`
+ 
  ## Authentication and Permission
- Whole project works with Token authentication.
+ Whole project works with Token authentication 
+ due to security reasons.
  You have to attach the Token key with every request.
  
- Token authorization is due to security reasons.
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-35-36.png)
  &nbsp;
  ![](media-readMe/Screenshot%20from%202020-08-06%2021-34-55.png)
@@ -58,3 +70,4 @@ The app works both with private and group chats.
  [channelslink]:https://channels.readthedocs.io/en/latest/
  [postgreslink]:https://www.postgresql.org/
  [redislink]:https://redis.io/
+ [memcachedlienk]:https://memcached.org/

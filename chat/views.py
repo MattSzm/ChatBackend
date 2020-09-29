@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.http import JsonResponse
+from django.core.cache import cache
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -19,17 +20,18 @@ class UserChatsList(APIView, LimitOffsetPagination):
         """
         Show all user chats or 'groups'/'private'
         """
-        chats = None
-        if not type:
+        key = f'all_chats_{request.user.uuid}'
+        chats = cache.get(key)
+        if not chats or len(chats) != request.user.number_of_chats:
             chats = chat.filters.filter_all_user_chats(user=request.user)
-        else:
-            if type not in ['private', 'groups']:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-            elif type == 'private':
-                chats = chat.filters.filter_specific(request.user, False)
+            cache.set(key, chats, 90)
+        if type:
+            if type == 'private':
+                chats = chats.filter(is_group_chat=False)
             elif type == 'groups':
-                chats = chat.filters.filter_specific(request.user, True)
-
+                chats = chats.filter(is_group_chat=True)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         if chats:
             result_page = self.paginate_queryset(chats, request, view=self)
             serializer = chat.serializers.ChatSerializer(result_page, many=True)
@@ -37,7 +39,7 @@ class UserChatsList(APIView, LimitOffsetPagination):
             return self.get_paginated_response(serializer.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    #create new group chat
+    # create new group chat
     def post(self, request, type=None, format=None):
         """
         User can create group chat
@@ -57,8 +59,8 @@ class UserChatsList(APIView, LimitOffsetPagination):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-#to open chat in the client we need to fetch data
-#from chat detail view and open websocket
+# to open chat in the client we need to fetch data
+# from chat detail view and open websocket
 class ChatDetail(APIView):
     def get_chat(self, chat_uuid):
         try:
@@ -109,7 +111,7 @@ class ChatDetail(APIView):
 
 
 
-#testing_purpose-Sandbox
+# testing_purpose-Sandbox
 # def index(request):
 #     return render(request, 'index.html', {})
 #

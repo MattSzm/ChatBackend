@@ -60,6 +60,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     objects = UserManager()
 
+    @property
+    def number_of_chats(self):
+        return len(self.chats.all())
+
     def get_short_name(self):
         return self.username.strip()
 
