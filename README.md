@@ -9,7 +9,7 @@ The app works both with private and group chats.
  
 ## Databases I used:
  * [PostgreSQL][postgreslink]
- * [Redis][redislink]
+ * [Redis][redislink] (Channels layer)
  * [Memcached][memcachedlienk] (Caching system)
  
  All additional extensions and packages can be found in 'requirements.txt'.
