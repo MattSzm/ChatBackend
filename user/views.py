@@ -62,20 +62,15 @@ class Friends(APIView, LimitOffsetPagination):
         return not user.filters.are_friends_for_adding(
                             first_user, second_user)
 
-    def get_friends(self):
-        return user.filters.filter_friends(self.current_user)
-
-
-    def dispatch(self, request, *args, **kwargs):
-        self.current_user = request.user
-        return super(Friends, self).dispatch(request, *args, **kwargs)
+    def get_friends(self, current_user):
+        return user.filters.filter_friends(current_user)
 
     #show all friends
     def get(self, request, format=None):
         """
         Shows list of current user's friends.
         """
-        friends = self.get_friends()
+        friends = self.get_friends(request.user)
         if friends:
             result_page = self.paginate_queryset(friends, request, view=self)
             serializer = user.serializers.BaseUserSerializer(result_page,
@@ -91,9 +86,9 @@ class Friends(APIView, LimitOffsetPagination):
         """
         user_uuid = request.data['user_uuid']
         invited_user = self.get_object(user_uuid)
-        if self.are_not_friends(self.current_user, invited_user):
+        if self.are_not_friends(request.user, invited_user):
             new_contact = Contact.objects.create(
-                first_user = self.current_user,
+                first_user = request.user,
                 second_user = invited_user
             )
             #first_user invites second_user
@@ -132,7 +127,8 @@ class Invitations(APIView):
         """
         Decide what to do with invitation. Accept or not.
         Decision is a boolean value.
-        Creating a private chat at the same time if accepted.
+        Creating and returning a private chat
+        at the same time if accepted.
         """
         serializer = user.serializers.InvitationResponse(data=request.data)
         if serializer.is_valid():
