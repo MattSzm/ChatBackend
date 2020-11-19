@@ -9,8 +9,9 @@ The app works both with private and group chats.
  
 ## Databases I used:
  * [PostgreSQL][postgreslink]
- * [Redis][redislink]
+ * [Redis][redislink] (Channels layer)
  * [Memcached][memcachedlienk] (Caching system)
+ * [Elasticsearch][Elasticsearchlink] (Searching specific messages)
  
  All additional extensions and packages can be found in 'requirements.txt'.
  
@@ -49,9 +50,14 @@ The app works both with private and group chats.
  - 90 seconds:
     - `/api/chat/mychats/`
     - `/api/chat/mychats/<str:type>/`   
-    - `/api/user/search/<str:phrase>//`    
+    - `/api/user/search/<str:phrase>/`    
  - 60 seconds: 
     - `/api/user/<uuid:uuid>/`
+ 
+ ## Elasticsearch
+ Taking advantage of highly scalable open-source full-text search and analytics engine during searching messages with given phrase in specific chat. 
+ This allows you to deal with the problem of searching through millions of messages for the word/phrase you are looking for.
+ Endpoint: `/api/chat/<uuid:chat_uuid>/search/<str:phrase>/`
  
  ## Authentication and Permission
  Whole project works with Token authentication 
@@ -71,3 +77,4 @@ The app works both with private and group chats.
  [postgreslink]:https://www.postgresql.org/
  [redislink]:https://redis.io/
  [memcachedlienk]:https://memcached.org/
+ [Elasticsearchlink]:https://www.elastic.co/elasticsearch/

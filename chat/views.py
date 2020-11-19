@@ -12,7 +12,6 @@ from chat.permission import is_participant_permission
 from user.filters import are_friends
 import chat.filters
 import chat.serializers
-from chat.models import Chat
 from user.models import User
 from chatApp.settings import clientElastic
 
@@ -112,7 +111,7 @@ class ChatSearching(APIView):
         if is_participant_permission(request.user, chat_object):
             results = Search(using=clientElastic, index="messages")\
                 .query("match", chat__uuid=chat_uuid)\
-                .filter("match", content=phrase)
+                .query("match", content=phrase)
             if results.count():
                 serialized_result = chat.serializers.ChatSearchingSerializer(results)
                 return JsonResponse(serialized_result, status=status.HTTP_200_OK)

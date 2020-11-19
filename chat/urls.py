@@ -8,7 +8,7 @@ app_name = 'chat'
 urlpatterns = [
     path('<uuid:chat_uuid>/', chatViews.ChatDetail.as_view(),
          name='chat-detail'),
-    path('<uuid:chat_uuid>/<str:phrase>/', chatViews.ChatSearching.as_view(),
+    path('<uuid:chat_uuid>/search/<str:phrase>/', chatViews.ChatSearching.as_view(),
          name='chat-searching'),
     path('mychats/', chatViews.UserChatsList.as_view(),
          name='user-chats-list'),

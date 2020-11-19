@@ -29,7 +29,7 @@ class Chat(models.Model):
     def load_next_15_messages(self, last_saw_date=timezone.now()):
         sortedMessages = self.messages.order_by('-time_stamp')\
             .filter(time_stamp__lt=last_saw_date)[:15]
-        if len(sortedMessages) > 0:
+        if sortedMessages:
             return sortedMessages, sortedMessages[len(sortedMessages)-1].\
                 time_stamp
         else:
