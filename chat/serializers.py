@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import serializers
 
 from chat.models import Chat
@@ -30,3 +32,15 @@ class GroupChatCreate(serializers.ModelSerializer):
         model = Chat
         fields = ['name']
         extra_kwargs = {'name': {'required': True}}
+
+
+def ChatSearchingSerializer(data):
+    results = {}
+    for item in data:
+        results[item.id] = {
+            'author': {'uuid': item.author.uuid},
+            'chat': {'uuid': item.chat.uuid},
+            'content': item.content,
+            'time_stamp': item.time_stamp
+        }
+    return results

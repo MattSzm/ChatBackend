@@ -5,14 +5,16 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
+from elasticsearch_dsl import Search
 
-from chat.actions import create_group_chat, add_user_to_chat
+from chat.actions import create_group_chat, add_user_to_chat, get_chat
 from chat.permission import is_participant_permission
 from user.filters import are_friends
 import chat.filters
 import chat.serializers
 from chat.models import Chat
 from user.models import User
+from chatApp.settings import clientElastic
 
 
 class UserChatsList(APIView, LimitOffsetPagination):
@@ -62,12 +64,6 @@ class UserChatsList(APIView, LimitOffsetPagination):
 # to open chat in the client we need to fetch data
 # from chat detail view and open websocket
 class ChatDetail(APIView):
-    def get_chat(self, chat_uuid):
-        try:
-            return Chat.objects.get(uuid=chat_uuid)
-        except Chat.DoesNotExist:
-            raise Http404
-
     def get_user(self, user_uuid):
         try:
             return User.objects.get(uuid=user_uuid)
@@ -78,7 +74,7 @@ class ChatDetail(APIView):
         """
         Get access to chat by uuid. No matter group or not.
         """
-        chat_object = self.get_chat(chat_uuid)
+        chat_object = get_chat(chat_uuid)
         if is_participant_permission(request.user, chat_object):
             serializer = chat.serializers.ChatSerializerWithParticipants(
                                     chat_object, many=False,
@@ -92,7 +88,7 @@ class ChatDetail(APIView):
         User can add friends(and only friends) to chat!
         Adding works only for group chats.
         """
-        chat_object = self.get_chat(chat_uuid)
+        chat_object = get_chat(chat_uuid)
         if is_participant_permission(request.user, chat_object):
             user_uuid = request.data['user_uuid']
             user_to_add = self.get_user(user_uuid)
@@ -106,6 +102,21 @@ class ChatDetail(APIView):
                     else:
                         return Response(status=status.HTTP_400_BAD_REQUEST)
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        return JsonResponse({'error': 'No access!'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChatSearching(APIView):
+    def get(self, request, chat_uuid, phrase, format=None):
+        chat_object = get_chat(chat_uuid)
+        if is_participant_permission(request.user, chat_object):
+            results = Search(using=clientElastic, index="messages")\
+                .query("match", chat__uuid=chat_uuid)\
+                .filter("match", content=phrase)
+            if results.count():
+                serialized_result = chat.serializers.ChatSearchingSerializer(results)
+                return JsonResponse(serialized_result, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         return JsonResponse({'error': 'No access!'},
                             status=status.HTTP_400_BAD_REQUEST)
 

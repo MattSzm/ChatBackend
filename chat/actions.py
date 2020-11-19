@@ -1,3 +1,5 @@
+from django.http import Http404
+
 from chat.models import Chat, ChatParticipantConnector
 
 
@@ -28,3 +30,10 @@ def create_group_chat(new_chat, current_user):
         return True
     except:
         return False
+
+
+def get_chat(chat_uuid):
+    try:
+        return Chat.objects.get(uuid=chat_uuid)
+    except Chat.DoesNotExist:
+        raise Http404

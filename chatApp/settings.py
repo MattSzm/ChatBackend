@@ -141,7 +141,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES':[
        #YOU WILL NEED SESSIONAUTH IF YOU WANT TO USE GOOGLE AUTH ENDPOINTS
@@ -175,4 +175,4 @@ ELASTICSEARCH_DSL = {
     },
 }
 
-client = Elasticsearch()
+clientElastic = Elasticsearch()
