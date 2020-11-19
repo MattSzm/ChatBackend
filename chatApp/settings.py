@@ -1,7 +1,11 @@
 import os
 import json
 
+
 from django.core.exceptions import ImproperlyConfigured
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Search
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open('/home/mateusz/projects/chatApp/secrets.json') as file:
@@ -47,6 +51,8 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'drf_yasg',
     'memcache_status',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf'
 ]
 
 MIDDLEWARE = [
@@ -162,3 +168,11 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
         }
 }
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
+
+client = Elasticsearch()
